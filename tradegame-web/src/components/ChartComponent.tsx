@@ -120,10 +120,13 @@ export function ChartComponent({
   useEffect(() => {
     if (seriesRef.current) seriesRef.current.setData(data);
   }, [data]);
-  const [priceLines, setPriceLines] = useState<IPriceLine[]>([]);
+  const priceLines = useRef<IPriceLine[]>([]);
 
   useEffect(() => {
     if (!seriesRef.current) return;
+    for (const line of priceLines.current) {
+      seriesRef.current!.removePriceLine(line);
+    }
     const newPriceLines = openOrders.map((ord) =>
       seriesRef.current!.createPriceLine({
         price: ord.entryPrice,
@@ -138,13 +141,8 @@ export function ChartComponent({
         })
       );
     }
-    setPriceLines(newPriceLines);
-    return () => {
-    for (const line of priceLines) {
-    seriesRef.current!.removePriceLine(line);
-    }
-}
-  }, [openOrders, liqPrice, priceLines]);
+    priceLines.current = newPriceLines;
+  }, [openOrders, liqPrice]);
   useEffect(() => {
     if (seriesRef.current && lastCandle) {
       seriesRef.current.update(lastCandle);
