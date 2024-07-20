@@ -31,7 +31,7 @@ export default async function Home() {
         <div className="my-12 text-center">
           <h1 className="text-4xl mb-1">Crypto Trading Simulator</h1>
           <i className="text-gray-500">
-            "Lose fake money before losing real money"
+            &quot;Lose fake money before losing real money&quot;
           </i>
         </div>
         <div className="m-auto text-center max-w-2xl mb-10">

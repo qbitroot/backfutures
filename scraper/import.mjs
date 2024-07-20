@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import fs from "fs";
 import path from "path";
 
-const uri = "mongodb://192.168.121.177:27017/cryptoData";
+const uri = "mongodb://127.0.0.1:27017/cryptoData";
 
 const ohlcSchema = new mongoose.Schema(
   {

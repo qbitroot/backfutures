@@ -17,7 +17,7 @@ export interface TickersApiType {
   candle_count: number;
 }
 
-export const getURL = (path: string) => new URL(path, process.env.apiURL);
+export const getFullURL = (path: string) => new URL(path, process.env.NEXT_PUBLIC_WEBSITE_URL);
 
 export const formatUSD = (price: number) =>
   price.toLocaleString("en-US", {
@@ -94,7 +94,7 @@ export const expandData = (data: CandlesChartType[], expandFactor: number) =>
   data.flatMap((c) => expandCandle(c, expandFactor));
 
 export async function fetchTickers() {
-  const response = await fetch(getURL("/api/tickers"));
+  const response = await fetch(getFullURL("/api/tickers"));
   const data: TickersApiType[] = await response.json();
 
   const processedData: TickersInfoType = {};
@@ -118,7 +118,7 @@ export async function fetchChartData(
     count: number;
   }>
 ) {
-  const endpoint = new URL("/api/candles", location.origin);
+  const endpoint = getFullURL("/api/candles");
   params.count = 200;
   endpoint.search = new URLSearchParams(
     Object.entries(params).reduce((obj, [k, v]: any) => {
