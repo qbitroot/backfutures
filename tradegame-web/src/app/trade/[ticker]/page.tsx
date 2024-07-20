@@ -1,0 +1,181 @@
+"use client";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setTimeMs,
+  setInitialTimeMs,
+  setPrice,
+  selectTimeMs,
+  selectInitialTimeMs,
+  selectLiquidated,
+} from "@/redux/simulationReducer";
+
+import {
+  fetchTickers,
+  fetchChartData,
+  getRandomTimeMs,
+  TickersInfoType,
+  randomRange,
+  randomGaussian,
+  expandData,
+} from "@/lib/utils";
+
+import { Row, Col, Select, Button } from "antd";
+import { ChartComponent, CandlesChartType } from "@/components/ChartComponent";
+import MainPanel from "@/components/MainPanel";
+import TradesPanel from "@/components/TradesPanel";
+import LiquidationModal from "@/components/LiquidationModal";
+import TradesHeader from "@/components/TradesHeader";
+
+const CANDLE_MIN = 15;
+const CANDLES_INITIAL = 100;
+const CANDLE_EXPANSION = 20;
+
+export default function Trade({ params }: { params: { ticker: string } }) {
+  const dispatch = useDispatch();
+  const [chartData, setChartData] = useState<CandlesChartType[]>([]);
+  const [chartDataNew, setChartDataNew] = useState<CandlesChartType[]>([]);
+  const [lastCandle, setLastCandle] = useState<CandlesChartType | null>(null);
+  const [lastCandleIdx, setLastCandleIdx] = useState(0);
+  const [tickersData, setTickersData] = useState<TickersInfoType>({});
+  const [simSpeed, setSimSpeed] = useState(180);
+  const [isPaused, setPaused] = useState(true);
+  const [isWaiting, setWaiting] = useState(false);
+  const currentTimeMs = useSelector(selectTimeMs);
+  const initialTimeMs = useSelector(selectInitialTimeMs);
+  const isLiquidated = useSelector(selectLiquidated);
+
+  const [timesFetchedMs, setTimesFetchedMs] = useState<{
+    from: number;
+    to: number;
+  }>({ from: 0, to: 0 });
+
+  useEffect(() => {
+    (async () => {
+      setTickersData(await fetchTickers());
+    })();
+  }, []);
+  useEffect(() => {
+    if (Object.keys(tickersData).length === 0 || !params.ticker) return;
+    const initialFetch = async () => {
+      if (initialTimeMs != 0) return;
+      const newData = await fetchChartData({
+        ticker: params.ticker,
+        endTime: getRandomTimeMs(tickersData[params.ticker]),
+      });
+      const initData = newData.slice(0, CANDLES_INITIAL);
+      setChartData(initData);
+      setChartDataNew(
+        expandData(newData.slice(CANDLES_INITIAL), CANDLE_EXPANSION)
+      );
+      const newTime = initData.at(-1).time * 1000;
+      dispatch(setTimeMs(newTime));
+      dispatch(setInitialTimeMs(newTime));
+      setTimesFetchedMs({
+        from: newData[0].time * 1000,
+        to: newData.at(-1).time * 1000,
+      });
+      dispatch(setPrice(initData.at(-1).close));
+    };
+    initialFetch();
+  }, [tickersData, params.ticker, dispatch, initialTimeMs]);
+
+  useEffect(() => {
+    if (lastCandle) {
+      dispatch(setPrice(lastCandle.close));
+    }
+  }, [lastCandle, dispatch]);
+
+  useEffect(() => {
+    if (isLiquidated) {
+      setPaused(true);
+    }
+  }, [isLiquidated]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isPaused || isLiquidated || isWaiting) return;
+      const timestep = async () => {
+        const updCandle = chartDataNew[lastCandleIdx];
+        setLastCandleIdx((v) => v + 1);
+        if (!isWaiting && currentTimeMs > timesFetchedMs.to) {
+          setWaiting(true);
+          //clearInterval(interval);
+          const newData = await fetchChartData({
+            ticker: params.ticker,
+            startTime: timesFetchedMs.to + 1,
+          });
+          const expandedData = expandData(newData, CANDLE_EXPANSION);
+          setChartDataNew((oldData) => [...oldData, ...expandedData]);
+          setTimesFetchedMs({
+            ...timesFetchedMs,
+            to: newData.at(-1).time * 1000,
+          });
+          setWaiting(false);
+          //setChartData([...chartData, ...newData]);
+        }
+        const newTime = currentTimeMs + (CANDLE_MIN * 60000) / CANDLE_EXPANSION;
+        dispatch(setTimeMs(newTime));
+        setLastCandle(updCandle);
+      };
+      timestep();
+    }, (CANDLE_MIN * 60000) / simSpeed / CANDLE_EXPANSION);
+    return () => clearInterval(interval);
+  }, [
+    lastCandleIdx,
+    isPaused,
+    isWaiting,
+    isLiquidated,
+    chartDataNew,
+    initialTimeMs,
+    currentTimeMs,
+    timesFetchedMs,
+    dispatch,
+    params.ticker,
+    simSpeed,
+  ]);
+
+  async function fetchBackward() {
+    //if (currentTimeMs - timesFetchedMs.from > 14 * 86_400_000) return;
+    setWaiting(true);
+    const newData = await fetchChartData({
+      ticker: params.ticker,
+      endTime: timesFetchedMs.from - 1,
+    });
+    //setChartData([...newData, ...chartData]);
+    setWaiting(false);
+    setTimesFetchedMs({ ...timesFetchedMs, from: newData[0].time * 1000 });
+    return newData;
+  }
+  return (
+    <>
+      <TradesHeader
+        ticker={params.ticker}
+        lastCandle={lastCandle}
+        setPaused={setPaused}
+        isPaused={isPaused}
+        simSpeed={simSpeed}
+        setSimSpeed={setSimSpeed}
+      />
+      <Row gutter={[24, 0]}>
+        <Col span={18}>
+          {chartData.length > 0 ? (
+            <ChartComponent
+              data={chartData}
+              inViewCount={100}
+              {...{ lastCandle, fetchBackward, isWaiting }}
+            />
+          ) : (
+            <p>LOADING...</p>
+          )}
+        </Col>
+        <Col span={6}>
+          <MainPanel />
+        </Col>
+        <Col span={18}>
+          <TradesPanel />
+        </Col>
+      </Row>
+      <LiquidationModal isLiquidated={isLiquidated} />
+    </>
+  );
+}
