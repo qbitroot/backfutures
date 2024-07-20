@@ -55,7 +55,7 @@ export function ChartComponent({
     if (!chartContainerRef.current) throw new Error();
     chartRef.current = createChart(chartContainerRef.current, {
       width: chartContainerRef.current.clientWidth,
-      height: 600,
+      height: Math.round(window.innerHeight / 2),
       localization: {
         priceFormatter: formatPrice,
       },
