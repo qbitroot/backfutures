@@ -157,7 +157,7 @@ export default function Trade({ params }: { params: { ticker: string } }) {
         setSimSpeed={setSimSpeed}
       />
       <Row gutter={[24, 0]}>
-        <Col lg={24} xl={18}>
+        <Col flex="auto" lg={24} xl={18}>
           {chartData.length > 0 ? (
             <ChartComponent
               data={chartData}
