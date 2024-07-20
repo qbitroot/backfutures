@@ -165,7 +165,7 @@ export default function Trade({ params }: { params: { ticker: string } }) {
               {...{ lastCandle, fetchBackward, isWaiting }}
             />
           ) : (
-            <p>LOADING...</p>
+            <p className="text-center my-20">LOADING...</p>
           )}
         </Col>
         <Col lg={24} xl={6}>

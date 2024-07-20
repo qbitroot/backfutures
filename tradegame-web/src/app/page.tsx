@@ -15,7 +15,7 @@ export default async function Home() {
         86_400_000
     );
     return (
-      <Link href={"/trade/" + k} key={k} className="block mb-4">
+      <Link href={"/trade/" + k} prefetch={true} key={k} className="block mb-4">
         <Card title={ticker} hoverable>
           <p>{days} days of data.</p>
           <p>From: {tickersInfo[k].time_from.toString()}</p>
