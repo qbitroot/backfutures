@@ -157,7 +157,7 @@ export default function Trade({ params }: { params: { ticker: string } }) {
         setSimSpeed={setSimSpeed}
       />
       <Row gutter={[24, 0]}>
-        <Col span={18}>
+        <Col lg={24} xl={18}>
           {chartData.length > 0 ? (
             <ChartComponent
               data={chartData}
@@ -168,10 +168,10 @@ export default function Trade({ params }: { params: { ticker: string } }) {
             <p>LOADING...</p>
           )}
         </Col>
-        <Col span={6}>
+        <Col lg={24} xl={6}>
           <MainPanel />
         </Col>
-        <Col span={18}>
+        <Col lg={18}>
           <TradesPanel />
         </Col>
       </Row>
