@@ -17,7 +17,8 @@ export interface TickersApiType {
   candle_count: number;
 }
 
-export const getFullURL = (path: string) => new URL(path, process.env.NEXT_PUBLIC_WEBSITE_URL);
+export const getFullURL = (path: string) =>
+  new URL(path, process.env.NEXT_PUBLIC_WEBSITE_URL);
 
 export const formatUSD = (price: number) =>
   price.toLocaleString("en-US", {
@@ -38,7 +39,7 @@ export const formatPrice = (price: number) => {
   } else if (price === 0) {
     return "0";
   } else {
-    return price.toExponential();
+    return price.toExponential(3);
   }
 };
 
