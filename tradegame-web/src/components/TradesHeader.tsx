@@ -32,11 +32,11 @@ export default function TradesHeader({
 
   return (
     <>
-      <Row className="items-center min-h-10">
-        <Col span={3}>
+      <Row gutter={[26, 0]} className="items-center min-h-10">
+        <Col lg={4} xl={3}>
           <p className="text-xl ml-4">{ticker.replace("USDT", "/USDT")}</p>
         </Col>
-        <Col span={3}>
+        <Col lg={6} xl={3}>
           <p
             className={
               "font-mono text-2xl " +
@@ -50,10 +50,10 @@ export default function TradesHeader({
             {formatPrice(currentPrice)}
           </p>
         </Col>
-        <Col span={3}>
+        <Col lg={6} xl={3}>
           <p className="font-bold">Time spent: {timeSpentMinutes} minutes</p>
         </Col>
-        <Col span={8}>
+        <Col lg={8} xl={8}>
           <Select
             options={[
               { value: 1, label: "realtime" },
