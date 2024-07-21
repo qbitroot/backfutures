@@ -4,6 +4,13 @@ const nextConfig = {
   env: {
     timeDeltaDays: "60",
   },
+  images: {
+    remotePatterns: [
+      {
+        hostname: "cdn.jsdelivr.net",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
