@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
+import type { Dispatch, SetStateAction } from "react";
 import {
   selectInitialTimeMs,
   selectLastCandle,
@@ -11,8 +12,8 @@ import {
 } from "@/redux/simulationReducer";
 import { Row, Col, Flex, Button, Slider, Select } from "antd";
 import { CandlesChartType } from "./ChartComponent";
-import { Dispatch, SetStateAction } from "react";
 import { formatPrice, formatUSD } from "@/lib/utils";
+import CryptoIcon from "@/components/CryptoIcon";
 
 export default function TradesHeader({ ticker }: { ticker: string }) {
   const dispatch = useDispatch();
@@ -28,8 +29,14 @@ export default function TradesHeader({ ticker }: { ticker: string }) {
   return (
     <>
       <Row gutter={[26, 0]} className="items-center min-h-10">
-        <Col lg={4} xl={3}>
-          <p className="text-xl ml-4">{ticker.replace("USDT", "/USDT")}</p>
+        <Col lg={4} xl={4}>
+          <span className="text-xl ml-4">
+            <CryptoIcon
+              ticker={ticker.replace("USDT", "")}
+              className="inline-block"
+            />
+            {" " + ticker.replace("USDT", "/USDT")}
+          </span>
         </Col>
         <Col lg={6} xl={3}>
           <p
@@ -57,6 +64,7 @@ export default function TradesHeader({ ticker }: { ticker: string }) {
               { value: 180, label: "3 min/s (180x)" },
               { value: 300, label: "5 min/s (300x)" },
               { value: 900, label: "15 min/s (900x)" },
+              { value: 1800, label: "30 min/s (1800x)" },
             ]}
             value={simSpeed}
             onChange={(v) => dispatch(setSimSpeed(v))}

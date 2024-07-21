@@ -38,7 +38,7 @@ export const simulationInitial: SimulationType = {
   isLiquidated: false,
   lastCandle: null,
   lastCandleIdx: 0,
-  simSpeed: 180,
+  simSpeed: 300,
   error: null,
 };
 
