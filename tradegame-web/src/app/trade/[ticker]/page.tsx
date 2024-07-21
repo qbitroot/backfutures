@@ -164,7 +164,7 @@ export default function Trade({ params }: { params: { ticker: string } }) {
   return (
     <>
       <TradesHeader ticker={params.ticker} />
-      <Row gutter={[24, 0]}>
+      <Row gutter={[32, 0]}>
         <Col flex="auto" lg={24} xl={18}>
           {chartData.length > 0 ? (
             <ChartComponent

@@ -50,9 +50,9 @@ export default function MainPanel() {
             max={125}
             value={leverage || 0}
             onChange={(val) => dispatch(setLeverage(val))}
-            marks={[1, 25, 50, 75, 100, 125].reduce((a, r) => {
-              a[r] = `${r}x`;
-              return a;
+            marks={[1, 25, 50, 75, 100, 125].reduce((r, a) => {
+              r[a] = `${a}x`;
+              return r;
             }, {} as { [key: number]: string })}
           />
         </Col>

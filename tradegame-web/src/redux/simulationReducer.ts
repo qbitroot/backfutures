@@ -156,37 +156,22 @@ export const selectEquity = ({ simulation }: GlobalStateType) =>
     0
   ) + simulation.currentBalance;
 export const selectLiquidationPrice = ({ simulation }: GlobalStateType) => {
-  const { openOrders, currentBalance } = simulation;
+  const { openOrders, currentPrice, currentBalance } = simulation;
 
-  if (openOrders.length === 0) {
-    // If there are no open orders, liquidation is impossible
-    return 0;
+  if (openOrders.length === 0) return null;
+
+  let avgEntry = 0;
+  let sumEntry = 0;
+  let netLeverage = 0;
+  for (const ord of openOrders) {
+    avgEntry += ord.entryPrice * ord.entrySize;
+    sumEntry += ord.entrySize;
+    netLeverage += ord.leverage * orderSign[ord.type];
   }
-
-  // Function to calculate equity at a given price
-  const calculateEquityAtPrice = (price: number) =>
-    openOrders.reduce((r, a) => r + calculatePosSize(price, a), 0) +
-    currentBalance;
-
-  // Binary search to find the liquidation price
-  let low = 0;
-  let high = Math.max(...openOrders.map((order) => order.entryPrice)) * 2; // Arbitrary upper bound
-
-  while (high - low > 0.0001) {
-    // Adjust precision as needed
-    const mid = (low + high) / 2;
-    const equity = calculateEquityAtPrice(mid);
-
-    if (equity > 0) {
-      high = mid;
-    } else if (equity < 0) {
-      low = mid;
-    } else {
-      return mid; // Exact liquidation price found
-    }
-  }
-
-  return (low + high) / 2; // Return the approximate liquidation price
+  if (netLeverage === 0) return null;
+  avgEntry /= sumEntry;
+  const liqPrice = avgEntry / (1 + 1 / netLeverage);
+  return liqPrice;
 };
 
 export default simulationSlice.reducer;

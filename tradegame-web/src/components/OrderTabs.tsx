@@ -12,6 +12,8 @@ import {
   Button,
   ButtonProps,
   ConfigProvider,
+  Slider,
+  SliderSingleProps,
 } from "antd";
 import { TinyColor } from "@ctrl/tinycolor";
 import { ReactNode, useState } from "react";
@@ -48,9 +50,10 @@ function OrderPanel({ type, price }: { type: "buy" | "sell"; price: number }) {
     sell: SellButton,
   }[type];
 
-  const [posSize, setPosSize] = useState(available);
+  const [posPercent, setPosPercent] = useState(available);
 
-  const handleClick = () => dispatch(placeOrder({ entrySize: posSize, type }));
+  const handleClick = () =>
+    dispatch(placeOrder({ entrySize: (available * posPercent) / 100, type }));
 
   return (
     <Col span={12}>
@@ -59,22 +62,40 @@ function OrderPanel({ type, price }: { type: "buy" | "sell"; price: number }) {
           <p>Available: {formatUSD(available)}</p>
           <InputNumber
             addonBefore="Price"
+            suffix="USDT"
             value={formatPrice(price)}
             disabled
+            className="w-full"
           />
         </Col>
         <Col span={24}>
           <InputNumber
             addonBefore="Total"
-            value={posSize}
-            onChange={(v) => setPosSize(v || 0)}
+            suffix="USDT"
+            value={(available * posPercent) / 100}
+            min={0}
+            max={available}
+            onChange={(v) => setPosPercent((posPercent / available) * 100)}
             precision={2}
+            className="w-full"
+          />
+        </Col>
+        <Col span={24}>
+          <Slider
+            min={1}
+            max={100}
+            value={posPercent}
+            onChange={(v) => setPosPercent(v)}
+            marks={[1, 50, 100].reduce((r, a) => {
+              r[a] = `${a}%`;
+              return r;
+            }, {} as { [key: number]: string })}
           />
         </Col>
         <Col span={24}>
           <OrderButton
             onClick={handleClick}
-            disabled={price == 0 || available == 0 || posSize > available}
+            disabled={price == 0 || available == 0}
           />
         </Col>
       </Row>
@@ -101,7 +122,7 @@ function MarketTab() {
   const currentPrice = useSelector(selectPrice);
   return (
     <>
-      <Row gutter={[24, 0]}>
+      <Row gutter={[42, 0]}>
         <OrderPanel type="buy" price={currentPrice} />
         <OrderPanel type="sell" price={currentPrice} />
       </Row>
