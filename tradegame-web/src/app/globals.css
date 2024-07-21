@@ -6,6 +6,10 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+body {
+	background: radial-gradient(circle, white 10%, silver 75%) fixed;
+}
+
 /* Fix antd horizontal overflow
  * https://github.com/ant-design/ant-design/issues/10144#issuecomment-516960601 */
 .ant-row {

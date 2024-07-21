@@ -2,6 +2,7 @@ import Link from "next/link";
 import { fetchTickers, TickersApiType } from "@/lib/utils";
 import { Row, Col, Card, Button, SelectProps, Layout } from "antd";
 import CryptoIcon from "@/components/CryptoIcon";
+import FakeChart from "@/components/FakeChart";
 
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -20,7 +21,14 @@ export default async function Home() {
     );
     return (
       <Link href={"/trade/" + k} prefetch={true} key={k} className="block mb-4">
-        <Card title={ticker} hoverable>
+        <Card
+          title={ticker}
+          hoverable
+          style={{
+            backgroundColor: "rgba(0,0,0,0)",
+            backdropFilter: "blur(10px)",
+          }}
+        >
           <CryptoIcon
             ticker={k.replace("USDT", "")}
             size={64}
@@ -36,8 +44,9 @@ export default async function Home() {
 
   return (
     <>
+      <FakeChart className="w-full h-screen fixed opacity-15 -z-50" />
       <main className="mb-36">
-        <div className="my-12 text-center">
+        <div className="py-12 text-center">
           <h1 className="text-4xl mb-1">Crypto Trading Simulator</h1>
           <i className="text-gray-500">
             &quot;97% of traders lose. Get in 3%&quot;
