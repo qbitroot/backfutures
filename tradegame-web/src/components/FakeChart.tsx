@@ -133,7 +133,7 @@ export default function FakeChart(props: any) {
       clearInterval(intervalId);
       window.removeEventListener("resize", handleResize);
     };
-  }, []); // Empty dependency array means this effect runs once on mount
+  }, [props.updateInterval]);
 
   return <canvas ref={canvasRef} {...props} />;
 }
