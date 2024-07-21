@@ -65,6 +65,7 @@ export const simulationSlice = createSlice({
     placeOrder: (state, { payload }) => {
       if (
         state.currentBalance > 0 &&
+        payload.entrySize > 0 &&
         state.currentBalance >= payload.entrySize
       ) {
         state.currentBalance -= payload.entrySize;
@@ -155,17 +156,37 @@ export const selectEquity = ({ simulation }: GlobalStateType) =>
     0
   ) + simulation.currentBalance;
 export const selectLiquidationPrice = ({ simulation }: GlobalStateType) => {
-  let sumLiqPricesW = 0;
-  let sumEntries = 0;
-  for (const ord of simulation.openOrders) {
-    sumLiqPricesW +=
-      ord.entrySize *
-      ord.entryPrice *
-      (1 - (1 / ord.leverage) * orderSign[ord.type]);
-    sumEntries += ord.entrySize;
+  const { openOrders, currentBalance } = simulation;
+
+  if (openOrders.length === 0) {
+    // If there are no open orders, liquidation is impossible
+    return 0;
   }
-  const liqPrice = sumLiqPricesW / sumEntries;
-  return liqPrice || null;
+
+  // Function to calculate equity at a given price
+  const calculateEquityAtPrice = (price: number) =>
+    openOrders.reduce((r, a) => r + calculatePosSize(price, a), 0) +
+    currentBalance;
+
+  // Binary search to find the liquidation price
+  let low = 0;
+  let high = Math.max(...openOrders.map((order) => order.entryPrice)) * 2; // Arbitrary upper bound
+
+  while (high - low > 0.0001) {
+    // Adjust precision as needed
+    const mid = (low + high) / 2;
+    const equity = calculateEquityAtPrice(mid);
+
+    if (equity > 0) {
+      high = mid;
+    } else if (equity < 0) {
+      low = mid;
+    } else {
+      return mid; // Exact liquidation price found
+    }
+  }
+
+  return (low + high) / 2; // Return the approximate liquidation price
 };
 
 export default simulationSlice.reducer;

@@ -14,7 +14,7 @@ import {
   ConfigProvider,
 } from "antd";
 import { TinyColor } from "@ctrl/tinycolor";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { formatPrice, formatUSD } from "@/lib/utils";
 
 function ColorButton({
@@ -47,8 +47,11 @@ function OrderPanel({ type, price }: { type: "buy" | "sell"; price: number }) {
     buy: BuyButton,
     sell: SellButton,
   }[type];
-  const handleClick = () =>
-    dispatch(placeOrder({ entrySize: available, type }));
+
+  const [posSize, setPosSize] = useState(available);
+
+  const handleClick = () => dispatch(placeOrder({ entrySize: posSize, type }));
+
   return (
     <Col span={12}>
       <Row gutter={[0, 12]}>
@@ -63,15 +66,15 @@ function OrderPanel({ type, price }: { type: "buy" | "sell"; price: number }) {
         <Col span={24}>
           <InputNumber
             addonBefore="Total"
-            value={available}
+            value={posSize}
+            onChange={(v) => setPosSize(v || 0)}
             precision={2}
-            disabled
           />
         </Col>
         <Col span={24}>
           <OrderButton
             onClick={handleClick}
-            disabled={price == 0 || available == 0}
+            disabled={price == 0 || available == 0 || posSize > available}
           />
         </Col>
       </Row>

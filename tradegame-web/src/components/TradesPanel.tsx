@@ -30,6 +30,7 @@ const openOrdersColumns: TableProps<OpenPositionsType>["columns"] = [
     title: "PnL",
     dataIndex: "PnL",
     key: "PnL",
+    width: 400,
     render: ({ percent, position }) => {
       const sign = percent > 0 ? "+" : "";
       return (
@@ -46,11 +47,31 @@ const openOrdersColumns: TableProps<OpenPositionsType>["columns"] = [
     },
   },
   {
-    title: "Action",
+    title: <CloseAllPositionsButton />,
     dataIndex: "key",
     render: (key) => <ClosePositionButton orderKey={parseInt(key)} />,
+    fixed: "right",
+    width: 200,
   },
 ];
+
+function CloseAllPositionsButton() {
+  const openOrders = useSelector(selectOpenOrders);
+  const dispatch = useDispatch();
+  return (
+    <Button
+      onClick={() => {
+        for (const ord of openOrders) {
+          dispatch(closeOrder(ord));
+        }
+      }}
+      danger
+      disabled={openOrders.length == 0}
+    >
+      Close all
+    </Button>
+  );
+}
 
 function ClosePositionButton({ orderKey }: { orderKey: number }) {
   const dispatch = useDispatch();

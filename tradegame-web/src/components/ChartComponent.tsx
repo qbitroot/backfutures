@@ -3,6 +3,8 @@ import {
   selectLiquidationPrice,
   selectOpenOrders,
   selectLastCandle,
+  calculatePosPercent,
+  selectPrice,
 } from "@/redux/simulationReducer";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -15,6 +17,7 @@ import {
   Time,
   PriceFormat,
   PriceFormatCustom,
+  SeriesMarker,
 } from "lightweight-charts";
 import { formatPrice, formatUSD } from "@/lib/utils";
 
@@ -122,6 +125,7 @@ export function ChartComponent({
     if (seriesRef.current) seriesRef.current.setData(data);
   }, [data]);
 
+  const currentPrice = useSelector(selectPrice);
   const priceLines = useRef<IPriceLine[]>([]);
 
   useEffect(() => {
@@ -133,6 +137,8 @@ export function ChartComponent({
       seriesRef.current!.createPriceLine({
         price: ord.entryPrice,
         title: ord.type,
+        color:
+          calculatePosPercent(currentPrice, ord) > 1 ? "#26A69A" : "#EF5350",
       })
     );
     if (liqPrice) {
@@ -140,11 +146,12 @@ export function ChartComponent({
         seriesRef.current!.createPriceLine({
           price: liqPrice,
           title: "LIQUIDATION",
+          color: "#ff0000",
         })
       );
     }
     priceLines.current = newPriceLines;
-  }, [openOrders, liqPrice]);
+  }, [openOrders, liqPrice, currentPrice]);
   useEffect(() => {
     if (seriesRef.current && lastCandle) {
       seriesRef.current.update({ ...lastCandle });
