@@ -32,7 +32,7 @@ export default async function Home() {
           <CryptoIcon
             ticker={k.replace("USDT", "")}
             size={64}
-            className="float-right"
+            style={{ float: "right" }}
           />
           <p>{days} days of data.</p>
           <p>From: {tickersInfo[k].time_from.toUTCString()}</p>
@@ -45,7 +45,12 @@ export default async function Home() {
   return (
     <>
       <FakeChart className="w-full h-screen fixed opacity-15 -z-50" />
-      <main className="mb-36">
+      <main
+        className="pb-36"
+        style={{
+          background: "radial-gradient(circle, transparent, silver) fixed",
+        }}
+      >
         <div className="py-12 text-center">
           <h1 className="text-4xl mb-1">Crypto Trading Simulator</h1>
           <i className="text-gray-500">

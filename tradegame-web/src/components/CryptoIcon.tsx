@@ -7,7 +7,6 @@ export default function CryptoIcon({ ticker, size = 32, ...props }: any) {
       alt={ticker}
       width={size}
       height={size}
-      block
       {...props}
     />
   );

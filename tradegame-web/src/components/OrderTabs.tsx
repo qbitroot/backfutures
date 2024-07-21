@@ -62,7 +62,6 @@ function OrderPanel({ type, price }: { type: "buy" | "sell"; price: number }) {
           <p>Available: {formatUSD(available)}</p>
           <InputNumber
             addonBefore="Price"
-            suffix="USDT"
             value={formatPrice(price)}
             disabled
             className="w-full"
@@ -71,7 +70,6 @@ function OrderPanel({ type, price }: { type: "buy" | "sell"; price: number }) {
         <Col span={24}>
           <InputNumber
             addonBefore="Total"
-            suffix="USDT"
             value={(available * posPercent) / 100}
             min={0}
             max={available}
