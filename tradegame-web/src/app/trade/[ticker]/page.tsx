@@ -1,4 +1,5 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -14,6 +15,7 @@ import {
   selectLastCandleIdx,
   setPaused,
   setLastCandle,
+  resetState,
 } from "@/redux/simulationReducer";
 
 import {
@@ -21,12 +23,10 @@ import {
   fetchChartData,
   getRandomTimeMs,
   TickersInfoType,
-  randomRange,
-  randomGaussian,
   expandData,
 } from "@/lib/utils";
 
-import { Row, Col, Select, Button } from "antd";
+import { Row, Col } from "antd";
 import { ChartComponent, CandlesChartType } from "@/components/ChartComponent";
 import MainPanel from "@/components/MainPanel";
 import TradesPanel from "@/components/TradesPanel";
@@ -38,7 +38,9 @@ const CANDLES_INITIAL = 100;
 const CANDLE_EXPANSION = 20;
 
 export default function Trade({ params }: { params: { ticker: string } }) {
+  const pathname = usePathname();
   const dispatch = useDispatch();
+
   const [chartData, setChartData] = useState<CandlesChartType[]>([]);
   const [chartDataNew, setChartDataNew] = useState<CandlesChartType[]>([]);
   const [tickersData, setTickersData] = useState<TickersInfoType>({});
@@ -61,6 +63,13 @@ export default function Trade({ params }: { params: { ticker: string } }) {
       setTickersData(await fetchTickers());
     })();
   }, []);
+
+  useEffect(() => {
+    dispatch(resetState());
+    setChartData([]);
+    setChartDataNew([]);
+    setWaiting(false);
+  }, [pathname, dispatch]);
 
   useEffect(() => {
     if (Object.keys(tickersData).length === 0 || !params.ticker) return;
