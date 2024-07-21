@@ -69,7 +69,10 @@ function OrderPanel({ type, price }: { type: "buy" | "sell"; price: number }) {
           />
         </Col>
         <Col span={24}>
-          <OrderButton onClick={handleClick} />
+          <OrderButton
+            onClick={handleClick}
+            disabled={price == 0 || available == 0}
+          />
         </Col>
       </Row>
     </Col>

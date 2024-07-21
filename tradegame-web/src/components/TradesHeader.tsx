@@ -1,32 +1,27 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   selectInitialTimeMs,
+  selectLastCandle,
+  selectPaused,
   selectPrice,
+  selectSimSpeed,
   selectTimeMs,
+  setPaused,
+  setSimSpeed,
 } from "@/redux/simulationReducer";
 import { Row, Col, Flex, Button, Slider, Select } from "antd";
 import { CandlesChartType } from "./ChartComponent";
 import { Dispatch, SetStateAction } from "react";
 import { formatPrice, formatUSD } from "@/lib/utils";
 
-export default function TradesHeader({
-  ticker,
-  lastCandle,
-  setPaused,
-  isPaused,
-  simSpeed,
-  setSimSpeed,
-}: {
-  ticker: string;
-  lastCandle: CandlesChartType | null;
-  setPaused: Dispatch<SetStateAction<boolean>>;
-  isPaused: boolean;
-  simSpeed: number;
-  setSimSpeed: Dispatch<SetStateAction<number>>;
-}) {
+export default function TradesHeader({ ticker }: { ticker: string }) {
+  const dispatch = useDispatch();
   const initialTimeMs = useSelector(selectInitialTimeMs);
   const currentTimeMs = useSelector(selectTimeMs);
   const currentPrice = useSelector(selectPrice);
+  const lastCandle = useSelector(selectLastCandle);
+  const isPaused = useSelector(selectPaused);
+  const simSpeed = useSelector(selectSimSpeed);
 
   const timeSpentMinutes = Math.round((currentTimeMs - initialTimeMs) / 60000);
 
@@ -64,9 +59,9 @@ export default function TradesHeader({
               { value: 900, label: "15 min/s (900x)" },
             ]}
             value={simSpeed}
-            onChange={setSimSpeed}
+            onChange={(v) => dispatch(setSimSpeed(v))}
           />
-          <Button onClick={() => setPaused((p) => !p)} type="primary">
+          <Button onClick={() => dispatch(setPaused(!isPaused))} type="primary">
             {isPaused ? "START" : "STOP"}
           </Button>
         </Col>

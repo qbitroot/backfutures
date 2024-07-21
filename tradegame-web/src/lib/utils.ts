@@ -34,7 +34,7 @@ export const formatPrice = (price: number) => {
     });
   } else if (price >= 10) {
     return price.toFixed(2);
-  } else if (price >= 1) {
+  } else if (price >= 0.0001) {
     return price.toFixed(4);
   } else if (price === 0) {
     return "0";

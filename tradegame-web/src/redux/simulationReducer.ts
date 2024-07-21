@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import type { CandlesChartType } from "@/components/ChartComponent";
 
 export interface OrderType {
   type: "buy" | "sell";
@@ -11,10 +12,14 @@ export interface SimulationType {
   currentBalance: number;
   currentTimeMs: number;
   initialTimeMs: number;
+  isPaused: boolean;
   currentPrice: number;
   leverage: number;
   openOrders: OrderType[];
   isLiquidated: boolean;
+  lastCandle: CandlesChartType | null;
+  lastCandleIdx: number;
+  simSpeed: number;
   error: string | null;
 }
 
@@ -26,10 +31,14 @@ export const simulationInitial: SimulationType = {
   currentBalance: 100,
   currentTimeMs: 0,
   initialTimeMs: 0,
+  isPaused: true,
   currentPrice: 0,
   leverage: 10,
   openOrders: [],
   isLiquidated: false,
+  lastCandle: null,
+  lastCandleIdx: 0,
+  simSpeed: 180,
   error: null,
 };
 
@@ -41,12 +50,18 @@ export const simulationSlice = createSlice({
       state.currentPrice = payload;
       if (selectEquity({ simulation: state }) <= 0) state.isLiquidated = true;
     },
-    setTimeMs: (state, { payload }) => ({ ...state, currentTimeMs: payload }),
-    setInitialTimeMs: (state, { payload }) => ({
-      ...state,
-      initialTimeMs: payload,
-    }),
-    setLeverage: (state, { payload }) => ({ ...state, leverage: payload }),
+    setTimeMs: (state, { payload }) => {
+      state.currentTimeMs = payload;
+    },
+    setInitialTimeMs: (state, { payload }) => {
+      state.initialTimeMs = payload;
+    },
+    setPaused: (state, { payload }) => {
+      state.isPaused = payload;
+    },
+    setLeverage: (state, { payload }) => {
+      state.leverage = payload;
+    },
     placeOrder: (state, { payload }) => {
       if (
         state.currentBalance > 0 &&
@@ -68,13 +83,22 @@ export const simulationSlice = createSlice({
       state.currentBalance +=
         Math.ceil(calculatePosSize(state.currentPrice, closed) * 100) / 100;
     },
-    resetBalance: (state) => ({
-      ...state,
-      currentBalance: 100,
-      openOrders: [],
-      isLiquidated: false,
-    }),
-    clearError: (state, _) => ({ ...state, error: null }),
+    setLastCandle: (state, { payload }) => {
+      state.lastCandle = payload;
+      state.lastCandleIdx++;
+    },
+    setSimSpeed: (state, { payload }) => {
+      state.simSpeed = payload;
+    },
+    resetBalance: (state) => {
+      state.currentBalance = 100;
+      state.openOrders = [];
+      state.isLiquidated = false;
+    },
+    clearError: (state) => {
+      state.error = null;
+    },
+    resetState: () => simulationInitial,
   },
 });
 
@@ -82,11 +106,15 @@ export const {
   setPrice,
   setTimeMs,
   setInitialTimeMs,
+  setPaused,
   setLeverage,
+  setLastCandle,
+  setSimSpeed,
   placeOrder,
   closeOrder,
   resetBalance,
   clearError,
+  resetState,
 } = simulationSlice.actions;
 
 const orderSign = { buy: 1, sell: -1 };
@@ -104,6 +132,8 @@ export const selectTimeMs = ({ simulation }: GlobalStateType) =>
   simulation.currentTimeMs;
 export const selectInitialTimeMs = ({ simulation }: GlobalStateType) =>
   simulation.initialTimeMs;
+export const selectPaused = ({ simulation }: GlobalStateType) =>
+  simulation.isPaused;
 export const selectBalance = ({ simulation }: GlobalStateType) =>
   simulation.currentBalance;
 export const selectLeverage = ({ simulation }: GlobalStateType) =>
@@ -112,6 +142,12 @@ export const selectOpenOrders = ({ simulation }: GlobalStateType) =>
   simulation.openOrders;
 export const selectLiquidated = ({ simulation }: GlobalStateType) =>
   simulation.isLiquidated;
+export const selectLastCandle = ({ simulation }: GlobalStateType) =>
+  simulation.lastCandle;
+export const selectLastCandleIdx = ({ simulation }: GlobalStateType) =>
+  simulation.lastCandleIdx;
+export const selectSimSpeed = ({ simulation }: GlobalStateType) =>
+  simulation.simSpeed;
 
 export const selectEquity = ({ simulation }: GlobalStateType) =>
   simulation.openOrders.reduce(

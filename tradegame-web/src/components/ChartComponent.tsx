@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import {
   selectLiquidationPrice,
   selectOpenOrders,
+  selectLastCandle,
 } from "@/redux/simulationReducer";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -28,20 +29,19 @@ export type CandlesChartType = CandlestickData<Time>;
 
 export function ChartComponent({
   data,
-  lastCandle,
   fetchBackward,
   isWaiting,
   inViewCount,
 }: {
   data: CandlesChartType[];
   fetchBackward: Function;
-  lastCandle: CandlesChartType | null;
   isWaiting: boolean;
   inViewCount: number;
 }) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const openOrders = useSelector(selectOpenOrders);
   const liqPrice = useSelector(selectLiquidationPrice);
+  const lastCandle = useSelector(selectLastCandle);
 
   const waitRef = useRef(isWaiting);
   useEffect(() => {
@@ -117,9 +117,11 @@ export function ChartComponent({
         .unsubscribeVisibleLogicalRangeChange(handler);
     };
   }, [fetchBackward, isWaiting]);
+
   useEffect(() => {
     if (seriesRef.current) seriesRef.current.setData(data);
   }, [data]);
+
   const priceLines = useRef<IPriceLine[]>([]);
 
   useEffect(() => {
@@ -145,7 +147,7 @@ export function ChartComponent({
   }, [openOrders, liqPrice]);
   useEffect(() => {
     if (seriesRef.current && lastCandle) {
-      seriesRef.current.update(lastCandle);
+      seriesRef.current.update({ ...lastCandle });
     }
   }, [lastCandle]);
 

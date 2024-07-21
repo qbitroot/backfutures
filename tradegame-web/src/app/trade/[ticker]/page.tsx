@@ -7,7 +7,13 @@ import {
   setPrice,
   selectTimeMs,
   selectInitialTimeMs,
+  selectPaused,
   selectLiquidated,
+  selectSimSpeed,
+  selectLastCandle,
+  selectLastCandleIdx,
+  setPaused,
+  setLastCandle,
 } from "@/redux/simulationReducer";
 
 import {
@@ -35,12 +41,12 @@ export default function Trade({ params }: { params: { ticker: string } }) {
   const dispatch = useDispatch();
   const [chartData, setChartData] = useState<CandlesChartType[]>([]);
   const [chartDataNew, setChartDataNew] = useState<CandlesChartType[]>([]);
-  const [lastCandle, setLastCandle] = useState<CandlesChartType | null>(null);
-  const [lastCandleIdx, setLastCandleIdx] = useState(0);
   const [tickersData, setTickersData] = useState<TickersInfoType>({});
-  const [simSpeed, setSimSpeed] = useState(180);
-  const [isPaused, setPaused] = useState(true);
   const [isWaiting, setWaiting] = useState(false);
+  const isPaused = useSelector(selectPaused);
+  const lastCandle = useSelector(selectLastCandle);
+  const lastCandleIdx = useSelector(selectLastCandleIdx);
+  const simSpeed = useSelector(selectSimSpeed);
   const currentTimeMs = useSelector(selectTimeMs);
   const initialTimeMs = useSelector(selectInitialTimeMs);
   const isLiquidated = useSelector(selectLiquidated);
@@ -55,6 +61,7 @@ export default function Trade({ params }: { params: { ticker: string } }) {
       setTickersData(await fetchTickers());
     })();
   }, []);
+
   useEffect(() => {
     if (Object.keys(tickersData).length === 0 || !params.ticker) return;
     const initialFetch = async () => {
@@ -88,15 +95,14 @@ export default function Trade({ params }: { params: { ticker: string } }) {
 
   useEffect(() => {
     if (isLiquidated) {
-      setPaused(true);
+      dispatch(setPaused(true));
     }
-  }, [isLiquidated]);
+  }, [isLiquidated, dispatch]);
   useEffect(() => {
     const interval = setInterval(() => {
       if (isPaused || isLiquidated || isWaiting) return;
       const timestep = async () => {
         const updCandle = chartDataNew[lastCandleIdx];
-        setLastCandleIdx((v) => v + 1);
         if (!isWaiting && currentTimeMs > timesFetchedMs.to) {
           setWaiting(true);
           //clearInterval(interval);
@@ -115,7 +121,7 @@ export default function Trade({ params }: { params: { ticker: string } }) {
         }
         const newTime = currentTimeMs + (CANDLE_MIN * 60000) / CANDLE_EXPANSION;
         dispatch(setTimeMs(newTime));
-        setLastCandle(updCandle);
+        dispatch(setLastCandle(updCandle));
       };
       timestep();
     }, (CANDLE_MIN * 60000) / simSpeed / CANDLE_EXPANSION);
@@ -148,14 +154,7 @@ export default function Trade({ params }: { params: { ticker: string } }) {
   }
   return (
     <>
-      <TradesHeader
-        ticker={params.ticker}
-        lastCandle={lastCandle}
-        setPaused={setPaused}
-        isPaused={isPaused}
-        simSpeed={simSpeed}
-        setSimSpeed={setSimSpeed}
-      />
+      <TradesHeader ticker={params.ticker} />
       <Row gutter={[24, 0]}>
         <Col flex="auto" lg={24} xl={18}>
           {chartData.length > 0 ? (
