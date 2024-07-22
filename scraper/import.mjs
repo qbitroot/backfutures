@@ -26,6 +26,10 @@ const OhlcModel = mongoose.model("Ohlc", ohlcSchema);
 
 // Function to process and insert data from a JSON file
 async function processFile(filePath, ticker) {
+  if (await OhlcModel.exists({ticker})) {
+	  console.log("Already exists");
+	  return;
+  }
   const data = fs.readFileSync(filePath, "utf8");
   const ohlcData = JSON.parse(data);
 

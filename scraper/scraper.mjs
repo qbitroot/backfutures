@@ -1,9 +1,9 @@
 import fs from "fs/promises";
 
 const API_URL = "https://www.binance.com/api/v3/uiKlines";
-const SYMBOL = "PEPEUSDT";
+const SYMBOL = "NEARUSDT";
 const INTERVAL = "15m";
-const END_TIME = 1720446127000;
+const END_TIME = 1721666581000;
 const LIMIT = 1000;
 const OUTPUT_FILE = `data/${SYMBOL}-${INTERVAL}.json`;
 

@@ -37,6 +37,10 @@ const tickersSchema = new mongoose.Schema(
 const TickerModel = mongoose.model("Ticker", tickersSchema);
 
 async function processTicker(ticker) {
+  if (await TickerModel.exists({ticker})) {
+	  console.log("Already exists");
+	  return;
+  }
   const first = (
     await OhlcModel.findOne({ ticker: ticker }, null, {
       sort: "open_time",
