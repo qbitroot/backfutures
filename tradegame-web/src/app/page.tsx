@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { fetchTickers, TickersApiType } from "@/lib/utils";
 import { Row, Col, Card, Button, SelectProps, Layout } from "antd";
+import { SocialIcon } from "react-social-icons";
 import CryptoIcon from "@/components/CryptoIcon";
 import FakeChart from "@/components/FakeChart";
 
@@ -20,33 +21,35 @@ export default async function Home() {
         86_400_000
     );
     return (
-      <Link href={"/trade/" + k} prefetch={true} key={k} className="block mb-4">
-        <Card
-          title={ticker}
-          hoverable
-          style={{
-            backgroundColor: "rgba(0,0,0,0)",
-            backdropFilter: "blur(10px)",
-          }}
-        >
-          <CryptoIcon
-            ticker={k.replace("USDT", "")}
-            size={64}
-            style={{ float: "right" }}
-          />
-          <p>{days} days of data.</p>
-          <p>From: {tickersInfo[k].time_from.toUTCString()}</p>
-          <p>To: {tickersInfo[k].time_to.toUTCString()}</p>
-        </Card>
-      </Link>
+      <Col xs={24} md={12} lg={8} key={k}>
+        <Link href={"/trade/" + k} prefetch={true} className="block mb-4">
+          <Card
+            title={ticker}
+            hoverable
+            style={{
+              backgroundColor: "rgba(0,0,0,0)",
+              backdropFilter: "blur(12px)",
+            }}
+          >
+            <CryptoIcon
+              ticker={k.replace("USDT", "")}
+              size={64}
+              className="float-right"
+            />
+            <p>{days} days of data.</p>
+            <p>From: {tickersInfo[k].time_from.toUTCString()}</p>
+            <p>To: {tickersInfo[k].time_to.toUTCString()}</p>
+          </Card>
+        </Link>
+      </Col>
     );
   });
 
   return (
     <>
-      <FakeChart className="w-full h-screen fixed opacity-15 -z-50" />
+      <FakeChart className="w-full h-[30vh] fixed opacity-15 -z-50" />
       <main
-        className="pb-36"
+        className="pb-24 h-screen"
         style={{
           background: "radial-gradient(circle, transparent, silver) fixed",
         }}
@@ -66,9 +69,17 @@ export default async function Home() {
             with up to 125x leverage!
           </p>
         </div>
-        <div className="m-auto max-w-xl">
+        <div className="m-auto max-w-7xl">
           <p>Choose a trading pair</p>
-          {cards}
+          <Row gutter={12}>{cards}</Row>
+        </div>
+        <div className="m-auto flex gap-4 w-fit my-12 grayscale">
+          <SocialIcon target="_blank" url="https://youtube.com/@Virbox" />
+          <SocialIcon target="_blank" url="https://x.com/qbitroot" />
+          <SocialIcon
+            target="_blank"
+            url="https://github.com/qbitroot/backfutures"
+          />
         </div>
       </main>
     </>

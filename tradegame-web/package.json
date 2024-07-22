@@ -15,9 +15,11 @@
     "lightweight-charts": "^4.1.6",
     "mongoose": "^8.4.5",
     "next": "14.2.4",
+    "posthog-js": "^1.148.1",
     "react": "^18",
     "react-dom": "^18",
     "react-redux": "^9.1.2",
+    "react-social-icons": "^6.16.0",
     "tinycolor": "^0.0.1"
   },
   "devDependencies": {
