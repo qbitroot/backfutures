@@ -102,7 +102,7 @@ export default function Trade({ params }: { params: { ticker: string } }) {
   }, [isLiquidated, dispatch]);
   useEffect(() => {
     const interval = setInterval(() => {
-      if (isPaused || isLiquidated || isWaiting || chartDataNew.length !== 0)
+      if (isPaused || isLiquidated || isWaiting || chartDataNew.length === 0)
         return;
       const timestep = async () => {
         const updCandle = chartDataNew[lastCandleIdx];
