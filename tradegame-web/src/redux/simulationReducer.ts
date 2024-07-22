@@ -31,14 +31,14 @@ export const simulationInitial: SimulationType = {
   currentBalance: 100,
   currentTimeMs: 0,
   initialTimeMs: 0,
-  isPaused: true,
+  isPaused: false,
   currentPrice: 0,
   leverage: 10,
   openOrders: [],
   isLiquidated: false,
   lastCandle: null,
   lastCandleIdx: 0,
-  simSpeed: 300,
+  simSpeed: 180,
   error: null,
 };
 
