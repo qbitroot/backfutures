@@ -27,7 +27,7 @@ export default async function Home() {
             title={ticker}
             hoverable
             style={{
-              backgroundColor: "rgba(0,0,0,0)",
+              backgroundColor: "rgba(255,255,255,0.25)",
               backdropFilter: "blur(12px)",
             }}
           >
