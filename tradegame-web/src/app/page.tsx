@@ -27,8 +27,8 @@ export default async function Home() {
             title={ticker}
             hoverable
             style={{
-              backgroundColor: "rgba(255,255,255,0.25)",
-              backdropFilter: "blur(12px)",
+              backgroundColor: "rgba(255,255,255,0.3)",
+              backdropFilter: "blur(5px)",
             }}
           >
             <CryptoIcon
