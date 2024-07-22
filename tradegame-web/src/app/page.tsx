@@ -49,7 +49,7 @@ export default async function Home() {
     <>
       <FakeChart className="w-full h-[30vh] fixed opacity-15 -z-50" />
       <main
-        className="pb-24 h-screen"
+        className="pb-24 min-h-screen"
         style={{
           background: "radial-gradient(circle, transparent, silver) fixed",
         }}
@@ -81,6 +81,7 @@ export default async function Home() {
             url="https://github.com/qbitroot/backfutures"
           />
         </div>
+        <p className="text-center">hello@backfutures.com</p>
       </main>
     </>
   );
