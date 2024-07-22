@@ -11,7 +11,6 @@ import {
   setSimSpeed,
 } from "@/redux/simulationReducer";
 import { Row, Col, Flex, Button, Slider, Select } from "antd";
-import { CandlesChartType } from "./ChartComponent";
 import { formatPrice, formatUSD } from "@/lib/utils";
 import CryptoIcon from "@/components/CryptoIcon";
 

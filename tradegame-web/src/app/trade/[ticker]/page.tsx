@@ -65,13 +65,6 @@ export default function Trade({ params }: { params: { ticker: string } }) {
   }, []);
 
   useEffect(() => {
-    dispatch(resetState());
-    setChartData([]);
-    setChartDataNew([]);
-    setWaiting(false);
-  }, [pathname, dispatch]);
-
-  useEffect(() => {
     if (Object.keys(tickersData).length === 0 || !params.ticker) return;
     const initialFetch = async () => {
       if (initialTimeMs != 0) return;
@@ -148,6 +141,13 @@ export default function Trade({ params }: { params: { ticker: string } }) {
     params.ticker,
     simSpeed,
   ]);
+
+  useEffect(() => {
+    setWaiting(false);
+    setChartDataNew([]);
+    setChartData([]);
+    dispatch(resetState());
+  }, [pathname, dispatch]);
 
   async function fetchBackward() {
     //if (currentTimeMs - timesFetchedMs.from > 14 * 86_400_000) return;
