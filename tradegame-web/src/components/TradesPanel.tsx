@@ -35,8 +35,8 @@ const openOrdersColumns: TableProps<OpenPositionsType>["columns"] = [
     },
   },
   { title: "Leverage", dataIndex: "leverage", key: "leverage" },
-  { title: "Entry Price", dataIndex: "entryPrice", key: "entryPrice" },
   { title: "Size USDT", dataIndex: "entrySize", key: "entrySize" },
+  { title: "Entry Price", dataIndex: "entryPrice", key: "entryPrice" },
   {
     title: "PnL",
     dataIndex: "PnL",
@@ -107,11 +107,17 @@ function OpenPositions() {
         percent: calculatePosPercent(price, ord) - 1,
         position: calculatePosSize(price, ord) - ord.entrySize,
       },
-      entryPrice: formatPrice(ord.entryPrice) + " USDT",
+      entryPrice: formatPrice(ord.entryPrice),
       entrySize: formatUSD(ord.entrySize) + " USDT",
     });
   }
-  return <Table columns={openOrdersColumns} dataSource={table} />;
+  return (
+    <Table
+      columns={openOrdersColumns}
+      dataSource={table}
+      className="overflow-x-auto"
+    />
+  );
 }
 
 export default function TradesPanel() {
