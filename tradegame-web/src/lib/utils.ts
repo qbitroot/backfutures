@@ -142,7 +142,6 @@ export async function fetchChartData(
   } catch (e) {
     console.error(e);
   }
-  if (!data) data = [];
   const processedData: CandlesChartType[] = data.map(
     (candle: CandlesApiType) => ({
       time: (new Date(candle.open_time).getTime() / 1000) as UTCTimestamp,

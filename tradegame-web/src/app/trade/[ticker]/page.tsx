@@ -1,5 +1,5 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -39,6 +39,7 @@ const CANDLE_EXPANSION = 20;
 
 export default function Trade({ params }: { params: { ticker: string } }) {
   const pathname = usePathname();
+  const router = useRouter();
   const dispatch = useDispatch();
 
   const [chartData, setChartData] = useState<CandlesChartType[]>([]);
@@ -68,6 +69,10 @@ export default function Trade({ params }: { params: { ticker: string } }) {
     if (Object.keys(tickersData).length === 0 || !params.ticker) return;
     const initialFetch = async () => {
       if (initialTimeMs != 0) return;
+      if (!(params.ticker in tickersData)) {
+        router.replace("/trade/BTCUSDT");
+        return;
+      }
       const newData = await fetchChartData({
         ticker: params.ticker,
         endTime: getRandomTimeMs(tickersData[params.ticker]),
@@ -92,7 +97,7 @@ export default function Trade({ params }: { params: { ticker: string } }) {
       dispatch(setPrice(initDataLast.close));
     };
     initialFetch();
-  }, [tickersData, params.ticker, dispatch, initialTimeMs]);
+  }, [tickersData, initialTimeMs, params.ticker, dispatch, router]);
 
   useEffect(() => {
     if (lastCandle) {
