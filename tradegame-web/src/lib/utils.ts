@@ -35,7 +35,7 @@ export const formatPrice = (price: number) => {
   } else if (price >= 10) {
     return price.toFixed(2);
   } else if (price >= 0.0001) {
-    return price.toFixed(4);
+    return price.toFixed(7);
   } else if (price === 0) {
     return "0";
   } else {
@@ -95,8 +95,15 @@ export const expandData = (data: CandlesChartType[], expandFactor: number) =>
   data.flatMap((c) => expandCandle(c, expandFactor));
 
 export async function fetchTickers() {
-  const response = await fetch(getFullURL("/api/tickers"));
-  const data: TickersApiType[] = await response.json();
+  let response = null;
+  let data: TickersApiType[] = [];
+  try {
+    response = await fetch(getFullURL("/api/tickers"));
+    data = await response.json();
+  } catch (e) {
+    console.error(e);
+    return;
+  }
 
   const processedData: TickersInfoType = {};
   for (const d of data) {
@@ -127,8 +134,14 @@ export async function fetchChartData(
       return obj;
     }, {} as Record<string, string>)
   ).toString();
-  const res = await fetch(endpoint);
-  const data = await res.json();
+  let res = null;
+  let data: CandlesApiType[] = [];
+  try {
+    res = await fetch(endpoint);
+    data = await res.json();
+  } catch (e) {
+    console.error(e);
+  }
   const processedData = data.map((candle: CandlesApiType) => ({
     time: new Date(candle.open_time).getTime() / 1000,
     open: parseFloat(candle.open),

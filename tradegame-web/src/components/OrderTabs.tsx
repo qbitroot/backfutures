@@ -55,6 +55,9 @@ function OrderPanel({ type, price }: { type: "buy" | "sell"; price: number }) {
   const handleClick = () =>
     dispatch(placeOrder({ entrySize: (available * posPercent) / 100, type }));
 
+  const handleTotalChange = (v: string | null) => {
+    return setPosPercent((parseFloat(v ?? "100") / available) * 100);
+  };
   return (
     <Col span={12}>
       <Row gutter={[0, 12]}>
@@ -70,10 +73,14 @@ function OrderPanel({ type, price }: { type: "buy" | "sell"; price: number }) {
         <Col span={24}>
           <InputNumber
             addonBefore="Total"
-            value={(available * posPercent) / 100}
+            value={Math.round(available * posPercent) / 100}
             min={0}
             max={available}
-            onChange={(v) => setPosPercent((posPercent / available) * 100)}
+            onBlur={(e) => handleTotalChange(e.target.value)}
+            onKeyDown={(e) => {
+              e.key == "Enter" &&
+                handleTotalChange((e.target as HTMLInputElement).value);
+            }}
             precision={2}
             className="w-full"
           />

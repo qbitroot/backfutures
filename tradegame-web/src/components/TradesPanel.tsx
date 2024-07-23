@@ -19,11 +19,22 @@ interface OpenPositionsType {
     percent: number;
     position: number;
   };
-  leverage: number;
+  leverage: string;
 }
 
 const openOrdersColumns: TableProps<OpenPositionsType>["columns"] = [
-  { title: "Side", dataIndex: "type", key: "type" },
+  {
+    title: "Side",
+    dataIndex: "type",
+    key: "type",
+    render: (type: string) => {
+      const classes = { buy: "text-green-800", sell: "text-red-800" } as {
+        [key: string]: string;
+      };
+      return <p className={classes[type]}>{type.toUpperCase()}</p>;
+    },
+  },
+  { title: "Leverage", dataIndex: "leverage", key: "leverage" },
   { title: "Entry Price", dataIndex: "entryPrice", key: "entryPrice" },
   { title: "Size USDT", dataIndex: "entrySize", key: "entrySize" },
   {
@@ -90,6 +101,7 @@ function OpenPositions() {
     const ord = openOrders[idx];
     table.push({
       ...ord,
+      leverage: `${ord.leverage}x`,
       key: idx.toString(),
       PnL: {
         percent: calculatePosPercent(price, ord) - 1,

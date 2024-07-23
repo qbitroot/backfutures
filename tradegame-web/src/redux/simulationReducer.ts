@@ -170,8 +170,10 @@ export const selectLiquidationPrice = ({ simulation }: GlobalStateType) => {
   }
   if (netLeverage === 0) return null;
   avgEntry /= sumEntry;
-  const liqPrice = avgEntry / (1 + 1 / netLeverage);
-  return liqPrice;
+  const liqPrice =
+    avgEntry *
+    (1 - (1 / netLeverage) * ((sumEntry + currentBalance) / sumEntry));
+  return liqPrice > 0 ? liqPrice : null;
 };
 
 export default simulationSlice.reducer;
