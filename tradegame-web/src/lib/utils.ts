@@ -1,4 +1,5 @@
 import { CandlesChartType } from "@/components/ChartComponent";
+import { UTCTimestamp } from "lightweight-charts";
 
 export interface TickersInfoType {
   [key: string]: TickersApiType;
@@ -141,16 +142,16 @@ export async function fetchChartData(
   } catch (e) {
     console.error(e);
   }
-  const processedData = data.map((candle: CandlesApiType) => ({
-    time: new Date(candle.open_time).getTime() / 1000,
-    open: parseFloat(candle.open),
-    high: parseFloat(candle.high),
-    low: parseFloat(candle.low),
-    close: parseFloat(candle.close),
-  }));
+  if (!data) data = [];
+  const processedData: CandlesChartType[] = data.map(
+    (candle: CandlesApiType) => ({
+      time: (new Date(candle.open_time).getTime() / 1000) as UTCTimestamp,
+      open: parseFloat(candle.open),
+      high: parseFloat(candle.high),
+      low: parseFloat(candle.low),
+      close: parseFloat(candle.close),
+    })
+  );
   if (params.endTime) return processedData.reverse();
   else return processedData;
-}
-function setTickersData(processedData: any) {
-  throw new Error("Function not implemented.");
 }

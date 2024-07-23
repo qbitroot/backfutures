@@ -73,18 +73,23 @@ export default function Trade({ params }: { params: { ticker: string } }) {
         endTime: getRandomTimeMs(tickersData[params.ticker]),
       });
       const initData = newData.slice(0, CANDLES_INITIAL);
+      const initDataLast = initData.at(-1);
+      if (!initDataLast) {
+        console.error("initData is empty");
+        return;
+      }
       setChartData(initData);
       setChartDataNew(
         expandData(newData.slice(CANDLES_INITIAL), CANDLE_EXPANSION)
       );
-      const newTime = initData.at(-1).time * 1000;
+      const newTime = initDataLast.time * 1000;
       dispatch(setTimeMs(newTime));
       dispatch(setInitialTimeMs(newTime));
       setTimesFetchedMs({
         from: newData[0].time * 1000,
-        to: newData.at(-1).time * 1000,
+        to: newData.at(-1)!.time * 1000,
       });
-      dispatch(setPrice(initData.at(-1).close));
+      dispatch(setPrice(initDataLast.close));
     };
     initialFetch();
   }, [tickersData, params.ticker, dispatch, initialTimeMs]);
@@ -113,11 +118,16 @@ export default function Trade({ params }: { params: { ticker: string } }) {
             ticker: params.ticker,
             startTime: timesFetchedMs.to + 1,
           });
+          const newDataLast = newData.at(-1);
+          if (!newDataLast) {
+            console.error("No new data");
+            return;
+          }
           const expandedData = expandData(newData, CANDLE_EXPANSION);
           setChartDataNew((oldData) => [...oldData, ...expandedData]);
           setTimesFetchedMs({
             ...timesFetchedMs,
-            to: newData.at(-1).time * 1000,
+            to: newDataLast.time * 1000,
           });
           setWaiting(false);
           //setChartData([...chartData, ...newData]);

@@ -18,6 +18,7 @@ import {
   PriceFormat,
   PriceFormatCustom,
   SeriesMarker,
+  UTCTimestamp,
 } from "lightweight-charts";
 import { formatPrice, formatUSD } from "@/lib/utils";
 
@@ -28,7 +29,7 @@ import { formatPrice, formatUSD } from "@/lib/utils";
   low: number;
   close: number;
 }*/
-export type CandlesChartType = CandlestickData<Time>;
+export type CandlesChartType = CandlestickData<UTCTimestamp>;
 
 export function ChartComponent({
   data,
