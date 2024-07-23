@@ -102,7 +102,6 @@ export async function fetchTickers() {
     data = await response.json();
   } catch (e) {
     console.error(e);
-    return;
   }
 
   const processedData: TickersInfoType = {};

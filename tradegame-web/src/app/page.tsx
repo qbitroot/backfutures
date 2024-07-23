@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { fetchTickers, TickersApiType } from "@/lib/utils";
+import { fetchTickers } from "@/lib/utils";
 import { Row, Col, Card, Button, SelectProps, Layout } from "antd";
 import { SocialIcon } from "react-social-icons";
 import CryptoIcon from "@/components/CryptoIcon";
