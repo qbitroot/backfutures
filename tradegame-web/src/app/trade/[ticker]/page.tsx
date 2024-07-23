@@ -1,5 +1,6 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
+import { Metadata } from "next";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -35,7 +36,7 @@ import TradesHeader from "@/components/TradesHeader";
 
 const CANDLE_MIN = 15;
 const CANDLES_INITIAL = 100;
-const CANDLE_EXPANSION = 20;
+const CANDLE_EXPANSION = 10;
 
 export default function Trade({ params }: { params: { ticker: string } }) {
   const pathname = usePathname();

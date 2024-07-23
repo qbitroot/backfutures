@@ -49,11 +49,11 @@ export const randomRange = (from: number, to: number) =>
 export const randomGaussian = (from: number, to: number) => {
   let rand = 0;
 
-  for (let i = 0; i < 6; i += 1) {
+  for (let i = 0; i < 3; i += 1) {
     rand += Math.random();
   }
 
-  rand /= 6;
+  rand /= 3;
   return from + rand * (to - from);
 };
 

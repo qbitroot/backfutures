@@ -2,10 +2,18 @@ import type { Metadata } from "next";
 import { Providers } from "./providers";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  title: "Perpetual Futures Trainer",
+export const metadata = {
+  title: {
+    default: "BackFutures - Trade on historical data",
+    template: "%s - BackFutures",
+  },
+  openGraph: {
+    title: "BackFutures trading simulator",
+    description:
+      "No signup needed. Go back in time, practice your crypto trading skills with up to 125x leverage.",
+  },
   description:
-    "Exercise your cryptocurrency trading skills on historical data with Perpetual Futures Trainer",
+    "Learn trading on real market data. No signup needed. Use up to 125x leverage.",
 };
 
 export default function RootLayout({
