@@ -16,7 +16,7 @@ import {
   SliderSingleProps,
 } from "antd";
 import { TinyColor } from "@ctrl/tinycolor";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { formatPrice, formatUSD } from "@/lib/utils";
 
 function ColorButton({
@@ -50,7 +50,7 @@ function OrderPanel({ type, price }: { type: "buy" | "sell"; price: number }) {
     sell: SellButton,
   }[type];
 
-  const [posPercent, setPosPercent] = useState(available);
+  const [posPercent, setPosPercent] = useState(100);
 
   const handleClick = () =>
     dispatch(placeOrder({ entrySize: (available * posPercent) / 100, type }));
