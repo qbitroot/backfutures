@@ -68,6 +68,7 @@ export default function Trade({ params }: { params: { ticker: string } }) {
   useEffect(() => {
     if (Object.keys(tickersData).length === 0 || !params.ticker) return;
     const initialFetch = async () => {
+      console.log(navigator.userAgent);
       if (initialTimeMs != 0) return;
       if (!(params.ticker in tickersData)) {
         router.replace("/trade/BTCUSDT");
