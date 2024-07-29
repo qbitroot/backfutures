@@ -1,6 +1,7 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
 import { Metadata } from "next";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -27,12 +28,15 @@ import {
   expandData,
 } from "@/lib/utils";
 
-import { Row, Col } from "antd";
+import { Row, Col, Button, Input, Card } from "antd";
 import { ChartComponent, CandlesChartType } from "@/components/ChartComponent";
 import MainPanel from "@/components/MainPanel";
 import TradesPanel from "@/components/TradesPanel";
 import LiquidationModal from "@/components/LiquidationModal";
 import TradesHeader from "@/components/TradesHeader";
+import { SocialIcon } from "react-social-icons";
+import Link from "next/link";
+//import { subscribeEmail } from "./actions";
 
 const CANDLE_MIN = 15;
 const CANDLES_INITIAL = 100;
@@ -180,7 +184,7 @@ export default function Trade({ params }: { params: { ticker: string } }) {
     return newData;
   }
   return (
-    <>
+    <main className="mb-24">
       <TradesHeader ticker={params.ticker} />
       <Row gutter={[32, 0]}>
         <Col flex="auto" lg={24} xl={18}>
@@ -191,17 +195,26 @@ export default function Trade({ params }: { params: { ticker: string } }) {
               {...{ lastCandle, fetchBackward, isWaiting }}
             />
           ) : (
-            <p className="text-center my-20">LOADING...</p>
+            <p className="text-center h-[50vh]">LOADING...</p>
           )}
         </Col>
         <Col lg={24} xl={6}>
           <MainPanel />
         </Col>
-        <Col lg={18}>
+        <Col lg={24} xl={18}>
           <TradesPanel />
+        </Col>
+        <Col lg={24} xl={6}>
+          <Link
+            href="https://x.com/qbitroot"
+            className="xcom-link"
+            target="_blank"
+          >
+            Follow me on {"\u{1d54f}"}/Twitter
+          </Link>
         </Col>
       </Row>
       <LiquidationModal isLiquidated={isLiquidated} />
-    </>
+    </main>
   );
 }

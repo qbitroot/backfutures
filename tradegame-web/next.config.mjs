@@ -5,11 +5,7 @@ const nextConfig = {
     timeDeltaDays: "60",
   },
   images: {
-    remotePatterns: [
-      {
-        hostname: "cdn.jsdelivr.net",
-      },
-    ],
+    remotePatterns: [{ hostname: "cdn.jsdelivr.net" }],
   },
 };
 

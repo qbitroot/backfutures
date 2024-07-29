@@ -6,6 +6,24 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+.xcom-link {
+  display: block;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  width: fit-content;
+  font-size: 1.25rem;
+  color: white;
+  background-color: black;
+  transition: all 0.2s;
+  border: 1px solid black;
+  margin: 2rem auto;
+}
+.xcom-link:hover {
+  background-color: white;
+  color: black;
+}
+
 /* Fix antd horizontal overflow
  * https://github.com/ant-design/ant-design/issues/10144#issuecomment-516960601 */
 .ant-row {

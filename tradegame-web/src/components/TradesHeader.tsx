@@ -29,7 +29,7 @@ export default function TradesHeader({ ticker }: { ticker: string }) {
   return (
     <>
       <Row gutter={[26, 0]} className="items-center min-h-10">
-        <Col sm={12} lg={7} xl={6}>
+        <Col xs={12} sm={12} lg={7} xl={6}>
           <Link href="/">
             <Button type="link">Home</Button>
           </Link>
@@ -41,7 +41,7 @@ export default function TradesHeader({ ticker }: { ticker: string }) {
             {" " + ticker.replace("USDT", "/USDT")}
           </span>
         </Col>
-        <Col sm={12} lg={5} xl={3}>
+        <Col xs={12} sm={12} lg={5} xl={3}>
           <p
             className={
               "font-mono text-2xl " +
@@ -55,7 +55,7 @@ export default function TradesHeader({ ticker }: { ticker: string }) {
             {formatPrice(currentPrice)}
           </p>
         </Col>
-        <Col sm={12} lg={9} xl={6}>
+        <Col xs={12} sm={12} lg={9} xl={6}>
           <div className="flex">
             <p className="font-bold inline w-full">
               Time spent: {timeSpentMinutes} minutes
@@ -75,7 +75,7 @@ export default function TradesHeader({ ticker }: { ticker: string }) {
             />
           </div>
         </Col>
-        <Col sm={12} lg={3} xl={3}>
+        <Col xs={12} sm={12} lg={3} xl={3}>
           <Button
             onClick={() => dispatch(setPaused(!isPaused))}
             type="primary"
