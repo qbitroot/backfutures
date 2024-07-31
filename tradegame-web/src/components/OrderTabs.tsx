@@ -73,7 +73,7 @@ function OrderPanel({ type, price }: { type: "buy" | "sell"; price: number }) {
         <Col span={24}>
           <InputNumber
             addonBefore="Total"
-            value={Math.round(available * posPercent) / 100}
+            value={Math.floor(available * posPercent) / 100}
             min={0}
             max={available}
             onBlur={(e) => handleTotalChange(e.target.value)}
